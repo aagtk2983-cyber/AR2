@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>WebAR キャラ表示</title>
+  <style>
+    html, body { margin: 0; height: 100%; overflow: hidden; }
+    .hint { position: fixed; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.55); color: #fff; font: 14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; padding: 8px 12px; z-index: 10; }
+    .hint a { color: #fff; text-decoration: underline; }
+  </style>
+  <!-- A-Frame core -->
+  <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
+  <!-- AR.js for A-Frame (marker-based WebAR) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ar.js/2.1.1/aframe-ar.min.js"></script>
+</head>
+<body>
+  <!--
+    使い方:
+    1) assets/character.glb をあなたの好きな(権利OKな)モデルに置き換え。
+       画像を使うなら assets/character.png を置き、下の<a-image>を有効化。
+    2) GitHub Pages にデプロイしてスマホで開く。
+    3) 印刷した(または別端末に表示した) HIRO マーカーにかざすと出ます。
+  -->
+
+  <a-scene
+    embedded
+    vr-mode-ui="enabled: false"
+    renderer="precision: medium; antialias: true; colorManagement: true"
+    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
+  >
+    <a-assets>
+      <!-- 3D モデル(GLB)をプリロード -->
+      <a-asset-item id="charModel" src="assets/character.glb"></a-asset-item>
+      <!-- 2D 画像を使う場合はコメントアウト解除
+      <img id="charSprite" src="assets/character.png">
+      -->
+    </a-assets>
+
+    <!-- HIROマーカーにキャラを載せる。物理サイズは marker の見え方で調整。 -->
+    <a-marker preset="hiro">
+      <!-- 3D モデル版 -->
+      <a-entity
+        gltf-model="#charModel"
+        scale="0.5 0.5 0.5"
+        rotation="0 180 0"
+        position="0 0 0"
+        animation="property: rotation; to: 0 540 0; loop: true; dur: 8000; easing: linear"
+      ></a-entity>
+
+      <!-- 2D 画像版: 使うときは上の gltf-model を消してこれを有効化
+      <a-image src="#charSprite" position="0 0 0" rotation="-90 0 0" width="1" height="1" transparent="true"></a-image>
+      -->
+
+      <!-- 簡易ライティング -->
+      <a-entity light="type: directional; intensity: 1" position="1 1 1"></a-entity>
+      <a-entity light="type: ambient; intensity: 0.6"></a-entity>
+    </a-marker>
+
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <div class="hint">
+    カメラ許可をオンにして、HIROマーカーを映してください。モデルは <code>assets/character.glb</code> を差し替え。2D画像なら <code>assets/character.png</code> と <code>&lt;a-image&gt;</code> を使用。
+  </div>
+</body>
+</html>
