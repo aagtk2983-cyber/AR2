@@ -31,15 +31,13 @@
   >
     <a-assets>
       <!-- 3D モデル(GLB)をプリロード -->
-      <a-asset-item id="charModel" src="assets/character.png"></a-asset-item>
-      <!-- 2D 画像を使う場合はコメントアウト解除
+      <a-asset-item id="charModel" src="assets/character.glb"></a-asset-item>
       <img id="charSprite" src="assets/character.png">
-      -->
     </a-assets>
 
     <!-- HIROマーカーにキャラを載せる。物理サイズは marker の見え方で調整。 -->
     <a-marker preset="hiro">
-      <!-- 3D モデル版 -->
+      <!-- 3D モデル版（無効化）
       <a-entity
         gltf-model="#charModel"
         scale="0.5 0.5 0.5"
@@ -47,10 +45,10 @@
         position="0 0 0"
         animation="property: rotation; to: 0 540 0; loop: true; dur: 8000; easing: linear"
       ></a-entity>
-
-      <!-- 2D 画像版: 使うときは上の gltf-model を消してこれを有効化
-      <a-image src="#charSprite" position="0 0 0" rotation="-90 0 0" width="1" height="1" transparent="true"></a-image>
       -->
+
+      <!-- 2D 画像版（有効） -->
+      <a-image src="#charSprite" position="0 0 0" rotation="-90 0 0" width="1" height="1" transparent="true"></a-image>
 
       <!-- 簡易ライティング -->
       <a-entity light="type: directional; intensity: 1" position="1 1 1"></a-entity>
