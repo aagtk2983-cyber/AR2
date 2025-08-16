@@ -2,67 +2,69 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>WebAR キャラ表示</title>
-  <style>
-    html, body { margin: 0; height: 100%; overflow: hidden; }
-    .hint { position: fixed; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.55); color: #fff; font: 14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; padding: 8px 12px; z-index: 10; }
-    .hint a { color: #fff; text-decoration: underline; }
-  </style>
-  <!-- A-Frame core -->
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AR3: 別リポの画像を出す</title>
+
+  <!-- A-Frame & AR.js -->
   <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
-  <!-- AR.js for A-Frame (marker-based WebAR) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ar.js/2.1.1/aframe-ar.min.js"></script>
+
+  <style>
+    html,body{height:100%;margin:0;overflow:hidden}
+    .hint{position:fixed;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);color:#fff;
+      padding:8px 12px;font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;z-index:10}
+    .hint b{font-weight:700}
+  </style>
+
+  <script>
+    // ここに “assetsリポで公開されている画像のURL” を入れる（例を下のコメント参照）
+    const IMG_URL = "https://aagtk2983-cyber.github.io/image-for-AR2/assets/character.png";
+    // 例: https://aagtk2983-cyber.github.io/image-for-AR2/assets/character.png
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const img = document.getElementById("charSprite");
+      img.setAttribute("crossorigin", "anonymous"); // 念のため
+      img.setAttribute("src", IMG_URL);
+
+      const p = document.getElementById("path");
+      if (p) p.textContent = IMG_URL;
+
+      img.addEventListener("load",  () => { setStatus("HIROマーカーを映してください。"); });
+      img.addEventListener("error", () => { setStatus("画像を読み込めません。URL/公開設定/スペル/拡張子を確認。"); });
+
+      function setStatus(t){ const s=document.getElementById("status"); if(s) s.textContent=t; }
+    });
+  </script>
 </head>
 <body>
-  <!--
-    使い方:
-    1) assets/character.glb をあなたの好きな(権利OKな)モデルに置き換え。
-       画像を使うなら assets/character.png を置き、下の<a-image>を有効化。
-    2) GitHub Pages にデプロイしてスマホで開く。
-    3) 印刷した(または別端末に表示した) HIRO マーカーにかざすと出ます。
-  -->
+  <a-scene
+    embedded
+    vr-mode-ui="enabled:false"
+    renderer="precision:medium;antialias:true;colorManagement:true"
+    arjs="trackingMethod:best;sourceType:webcam;debugUIEnabled:true;">
+    <a-assets>
+      <img id="charSprite" src="">
+    </a-assets>
 
-<a-scene
-  embedded
-  vr-mode-ui="enabled: false"
-  renderer="precision: medium; antialias: true; colorManagement: true"
-  arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: true;"
->
-  <a-assets>
-    <!-- 画像の読み込み。ファイル名が違うならここを一致させる -->
-    <img id="charSprite" src="assets/character.png">
-  </a-assets>
+    <a-marker preset="hiro">
+      <a-image
+        src="#charSprite"
+        rotation="0 0 0"
+        position="0 0.6 0"
+        width="0.8" height="1.2"
+        transparent="true"
+        material="alphaTest:0.01">
+      </a-image>
+      <a-entity light="type:directional;intensity:1" position="1 1 1"></a-entity>
+      <a-entity light="type:ambient;intensity:0.6"></a-entity>
+    </a-marker>
 
-  <a-marker preset="hiro">
-    <!-- 立て看板にして見やすく -->
-    <a-image
-      src="#charSprite"
-      rotation="0 0 0"
-      position="0 0.6 0"
-      width="0.8" height="1.2"
-      transparent="true"
-      material="alphaTest:0.01">
-    </a-image>
-
-    <!-- ライト（画像には不要だが残してOK） -->
-    <a-entity light="type: directional; intensity: 1" position="1 1 1"></a-entity>
-    <a-entity light="type: ambient; intensity: 0.6"></a-entity>
-  </a-marker>
-
-  <a-entity camera></a-entity>
-</a-scene>
-
-    
- <a-scene
-  embedded
-  vr-mode-ui="enabled: false"
-  renderer="precision: medium; antialias: true; colorManagement: true"
-  arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: true;">
-
+    <a-entity camera></a-entity>
+  </a-scene>
 
   <div class="hint">
-    カメラ許可をオンにして、HIROマーカーを映してください。モデルは <code>assets/character.glb</code> を差し替え。2D画像なら <code>assets/character.png</code> と <code>&lt;a-image&gt;</code> を使用。
+    <div><b>画像URL:</b> <span id="path"></span></div>
+    <div id="status">読み込み中… カメラ許可を「許可」に。</div>
   </div>
 </body>
 </html>
